@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from '../../context/LocationContext';
 
 const LoginScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { location, loading, error } = useLocation();
 
   const handleLogin = () => {
     Alert.alert(t('login'), `${t('email')}: ${email}\n${t('password')}: ${password}`);
@@ -71,6 +73,16 @@ const LoginScreen: React.FC = () => {
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>{t('login')}</Text>
       </TouchableOpacity>
+      {/* Show current location */}
+      <View style={{ marginTop: 24 }}>
+        {loading && <Text>Loading location...</Text>}
+        {error && <Text style={{ color: 'red' }}>{error}</Text>}
+        {location && (
+          <Text style={{ color: '#888', fontSize: 14 }}>
+            Lat: {location.latitude}, Lon: {location.longitude}
+          </Text>
+        )}
+      </View>
     </View>
   );
 };
