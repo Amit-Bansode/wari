@@ -8,26 +8,28 @@ import {
   Pressable,
   Alert,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const LoginScreen: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
-    Alert.alert('Login', `Email: ${email}\nPassword: ${password}`);
+    Alert.alert(t('login'), `${t('email')}: ${email}\n${t('password')}: ${password}`);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Log in to your{`\n`}account</Text>
+      <Text style={styles.heading}>{t('login_heading')}</Text>
       {/* Email Field */}
       <View style={styles.inputContainer}>
         <Text style={styles.icon}>✅</Text>
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder={t('email')}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -40,7 +42,7 @@ const LoginScreen: React.FC = () => {
         <Text style={styles.icon}>🔒</Text>
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder={t('password')}
           value={password}
           onChangeText={setPassword}
           secureTextEntry={!showPassword}
@@ -59,15 +61,15 @@ const LoginScreen: React.FC = () => {
           <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
             {rememberMe && <Text style={styles.checkboxTick}>✓</Text>}
           </View>
-          <Text style={styles.rememberMe}>Remember me</Text>
+          <Text style={styles.rememberMe}>{t('remember_me')}</Text>
         </Pressable>
         <TouchableOpacity>
-          <Text style={styles.forgot}>Forgot the password?</Text>
+          <Text style={styles.forgot}>{t('forgot_password')}</Text>
         </TouchableOpacity>
       </View>
       {/* Login Button */}
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Log in</Text>
+        <Text style={styles.loginButtonText}>{t('login')}</Text>
       </TouchableOpacity>
     </View>
   );

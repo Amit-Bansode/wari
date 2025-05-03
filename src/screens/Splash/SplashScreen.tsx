@@ -11,7 +11,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 const SplashScreen: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace('Login');
+      navigation.replace('LanguageSelection');
     }, 2000);
     return () => clearTimeout(timer);
   }, [navigation]);
