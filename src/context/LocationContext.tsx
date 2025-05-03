@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import Geolocation, { GeoPosition } from 'react-native-geolocation-service';
-import { Platform } from 'react-native';
+import { Platform, AppState } from 'react-native';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import type { AppStateStatus } from 'react-native';
 
 interface LocationContextType {
   location: GeoPosition['coords'] | null;
@@ -23,6 +24,8 @@ export const LocationProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let appState: AppStateStatus = AppState.currentState;
+
     const getPermission = async () => {
       try {
         let permission;
@@ -56,7 +59,21 @@ export const LocationProvider = ({ children }: { children: ReactNode }) => {
         setLoading(false);
       }
     };
+
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+        setLoading(true);
+        getPermission();
+      }
+      appState = nextAppState;
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
     getPermission();
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return (

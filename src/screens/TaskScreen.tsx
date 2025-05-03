@@ -12,9 +12,12 @@ import {Picker} from '@react-native-picker/picker';
 import profileImg from '../assets/icons/profile.png';
 import hamburgerImg from '../assets/icons/hamburger.png';
 import { SafeAreaView as SafeAreaViewRN } from 'react-native-safe-area-context';
+import { useLocation } from '../context/LocationContext';
 
 const TaskScreen = () => {
   const [serviceTime, setServiceTime] = useState('10:00 a.m');
+  const { location, loading, error } = useLocation();
+
   return (
     <SafeAreaViewRN style={styles.container} edges={['top']}>
       <View style={styles.header}>
@@ -51,6 +54,15 @@ const TaskScreen = () => {
         <TouchableOpacity style={styles.confirmButton}>
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
+      </View>
+      <View style={styles.latLonContainer}>
+        {loading && <Text style={styles.latLonText}>Getting location...</Text>}
+        {error && <Text style={[styles.latLonText, { color: 'red' }]}>{error}</Text>}
+        {location && (
+          <Text style={styles.latLonText}>
+            Lat: {location.latitude}  Lon: {location.longitude}
+          </Text>
+        )}
       </View>
     </SafeAreaViewRN>
   );
@@ -97,6 +109,17 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   iconContainer: {
+  },
+  latLonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  latLonText: {
+    color: '#6B7686',
+    fontSize: 14,
   },
 });
 
