@@ -10,9 +10,13 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from '../../context/LocationContext';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/navigation';
 
 const LoginScreen: React.FC = () => {
   const { t } = useTranslation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -20,7 +24,8 @@ const LoginScreen: React.FC = () => {
   const { location, loading, error } = useLocation();
 
   const handleLogin = () => {
-    Alert.alert(t('login'), `${t('email')}: ${email}\n${t('password')}: ${password}`);
+    // Simulate successful login
+    navigation.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
   };
 
   return (
