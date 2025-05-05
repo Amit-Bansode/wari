@@ -13,19 +13,23 @@ import profileImg from '../assets/icons/profile.png';
 import hamburgerImg from '../assets/icons/hamburger.png';
 import { SafeAreaView as SafeAreaViewRN } from 'react-native-safe-area-context';
 import { useLocation } from '../context/LocationContext';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
 
 const TaskScreen = () => {
   const [serviceTime, setServiceTime] = useState('10:00 a.m');
   const { location, loading, error } = useLocation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <SafeAreaViewRN style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.iconContainer}>
+        <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('EditProfile')}>
           <Image source={profileImg} style={styles.iconImg} />
         </TouchableOpacity>
         <View style={{flex: 1}} />
-        <TouchableOpacity style={styles.iconContainer}>
+        <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Menu')}>
           <Image source={hamburgerImg} style={styles.iconImg} />
         </TouchableOpacity>
       </View>
@@ -51,7 +55,7 @@ const TaskScreen = () => {
         <TouchableOpacity style={styles.backButton}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.confirmButton}>
+        <TouchableOpacity style={styles.confirmButton} onPress={() => navigation.navigate('SanitationConfirmation')}>
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
       </View>

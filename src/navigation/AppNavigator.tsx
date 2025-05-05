@@ -11,6 +11,9 @@ import ReportScreen from '../screens/ReportScreen';
 import { Image, View, Text, Platform } from 'react-native';
 import TaskTabIcon from '../assets/icons/task.png';
 import ReportTabIcon from '../assets/icons/report.png';
+import EditProfileScreen from '../screens/Profile/EditProfileScreen';
+import MenuScreen from '../screens/MenuScreen';
+import SanitationConfirmationScreen from '../screens/SanitationConfirmationScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -77,6 +80,9 @@ const AppNavigator = () => (
       <Stack.Screen name="LanguageSelection" component={LanguageSelectionScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name="Menu" component={MenuScreen} />
+      <Stack.Screen name="SanitationConfirmation" component={SanitationConfirmationScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );
