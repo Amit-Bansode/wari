@@ -13,6 +13,7 @@ import { useLocation } from '../../context/LocationContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
+import { useAuth } from '../../app/services/auth.service';
 
 const LoginScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -21,11 +22,33 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { location, loading, error } = useLocation();
+  const [loading, setLoading] = useState(false);
+  const { location, loading: locationLoading, error: locationError } = useLocation();
+  const { login } = useAuth();
 
-  const handleLogin = () => {
-    // Simulate successful login
-    navigation.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await login({
+        username: email,
+        password: password
+      });
+      
+      if (response.token) {
+        // Navigate to main screen on successful login
+        navigation.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
+      }
+    } catch (error) {
+      Alert.alert('Login Failed', 'Invalid username or password');
+      console.error('Login error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,6 +65,7 @@ const LoginScreen: React.FC = () => {
           keyboardType="email-address"
           autoCapitalize="none"
           placeholderTextColor="#A0A0A0"
+          editable={!loading}
         />
       </View>
       {/* Password Field */}
@@ -54,6 +78,7 @@ const LoginScreen: React.FC = () => {
           onChangeText={setPassword}
           secureTextEntry={!showPassword}
           placeholderTextColor="#A0A0A0"
+          editable={!loading}
         />
         <Pressable onPress={() => setShowPassword((prev) => !prev)}>
           <Text style={styles.icon}>{showPassword ? '🙈' : '👁️'}</Text>
@@ -64,24 +89,31 @@ const LoginScreen: React.FC = () => {
         <Pressable
           style={styles.checkboxContainer}
           onPress={() => setRememberMe((prev) => !prev)}
+          disabled={loading}
         >
           <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
             {rememberMe && <Text style={styles.checkboxTick}>✓</Text>}
           </View>
           <Text style={styles.rememberMe}>{t('remember_me')}</Text>
         </Pressable>
-        <TouchableOpacity>
+        <TouchableOpacity disabled={loading}>
           <Text style={styles.forgot}>{t('forgot_password')}</Text>
         </TouchableOpacity>
       </View>
       {/* Login Button */}
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>{t('login')}</Text>
+      <TouchableOpacity 
+        style={[styles.loginButton, loading && styles.loginButtonDisabled]} 
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        <Text style={styles.loginButtonText}>
+          {loading ? 'Logging in...' : t('login')}
+        </Text>
       </TouchableOpacity>
       {/* Show current location */}
       <View style={{ marginTop: 24 }}>
-        {loading && <Text>Loading location...</Text>}
-        {error && <Text style={{ color: 'red' }}>{error}</Text>}
+        {locationLoading && <Text>Loading location...</Text>}
+        {locationError && <Text style={{ color: 'red' }}>{locationError}</Text>}
         {location && (
           <Text style={{ color: '#888', fontSize: 14 }}>
             Lat: {location.latitude}, Lon: {location.longitude}
@@ -170,6 +202,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
+  },
+  loginButtonDisabled: {
+    backgroundColor: '#A0A0A0',
   },
   loginButtonText: {
     color: '#fff',
