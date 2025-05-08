@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -13,14 +13,44 @@ import profileImg from '../assets/icons/profile.png';
 import hamburgerImg from '../assets/icons/hamburger.png';
 import { SafeAreaView as SafeAreaViewRN } from 'react-native-safe-area-context';
 import { useLocation } from '../context/LocationContext';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
+import { useTaskService } from '../app/services/tasks/task.service';
 
 const TaskScreen = () => {
   const [serviceTime, setServiceTime] = useState('10:00 a.m');
   const { location, loading, error } = useLocation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [taskData, setTaskData] = useState({
+    location: '',
+    subLocation: '',
+    service: ''
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const { getAvailableServices } = useTaskService();
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log('TaskScreen: Fetching task data...');
+      fetchTaskData();
+    }, [])
+  );
+
+  const fetchTaskData = async () => {
+    try {
+      const data = await getAvailableServices();
+      setTaskData({
+        location: data.location || '',
+        subLocation: data.subLocation || '',
+        service: data.service || ''
+      });
+    } catch (error) {
+      console.error('Error fetching task data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <SafeAreaViewRN style={styles.container} edges={['top']}>
@@ -35,12 +65,12 @@ const TaskScreen = () => {
       </View>
       <Text style={styles.title}>Task Available</Text>
       <Text style={styles.label}>Assigned Location</Text>
-      <TextInput style={styles.input} value="Pune" editable={false} />
+      <TextInput style={styles.input} value={taskData.location} editable={false} />
       <Text style={styles.label}>Sub location</Text>
-      <TextInput style={styles.input} value="Mulshi" editable={false} />
+      <TextInput style={styles.input} value={taskData.subLocation} editable={false} />
       <Text style={styles.label}>Service</Text>
-      <TextInput style={styles.input} value="Sanitation" editable={false} />
-      <Text style={styles.label}>Service Timings</Text>
+      <TextInput style={styles.input} value={taskData.service} editable={false} />
+      {/* <Text style={styles.label}>Service Timings</Text>
       <View style={styles.input}>
         <Picker
           selectedValue={serviceTime}
@@ -50,7 +80,7 @@ const TaskScreen = () => {
           <Picker.Item label="11:00 a.m" value="11:00 a.m" />
           <Picker.Item label="12:00 p.m" value="12:00 p.m" />
         </Picker>
-      </View>
+      </View> */}
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.backButton}>
           <Text style={styles.buttonText}>Back</Text>
