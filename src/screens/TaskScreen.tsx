@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   SafeAreaView,
+  AppState,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import profileImg from '../assets/icons/profile.png';
@@ -18,14 +19,36 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { useTaskService } from '../app/services/tasks/task.service';
 
+interface Location {
+  id: string;
+  name: string;
+}
+
+interface Services {
+  serviceId: string;
+  name: string;
+}
+
+interface TaskData {
+  location: Location;
+  subLocation: Location;
+  services: Services[];
+}
+
 const TaskScreen = () => {
   const [serviceTime, setServiceTime] = useState('10:00 a.m');
   const { location, loading, error } = useLocation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [taskData, setTaskData] = useState({
-    location: '',
-    subLocation: '',
-    service: ''
+  const [taskData, setTaskData] = useState<TaskData>({
+    location: {
+      id: '',
+      name: ''
+    },
+    subLocation: {
+      id: '',
+      name: ''
+    },
+    services: []
   });
   const [isLoading, setIsLoading] = useState(true);
   const { getAvailableServices } = useTaskService();
@@ -37,15 +60,49 @@ const TaskScreen = () => {
     }, [])
   );
 
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'active') {
+        console.log('App came to foreground, fetching task data...');
+        fetchTaskData();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   const fetchTaskData = async () => {
     try {
       const data = await getAvailableServices();
+      console.log('TaskScreen: Task data:', data);
+      
+      if (!data) {
+        throw new Error('No data received from API');
+      }
+
+      // Ensure the data is in the correct format
+      const location = typeof data.location === 'string' 
+        ? JSON.parse(data.location) 
+        : data.location || { id: '', name: '' };
+
+      const subLocation = typeof data.subLocation === 'string'
+        ? JSON.parse(data.subLocation)
+        : data.subLocation || { id: '', name: '' };
+
+      console.log('TaskScreen: Services:', data.services);
+      const services = typeof data.services === 'string'
+        ? JSON.parse(data.services)
+        : data.services || [];
+
       setTaskData({
-        location: data.location || '',
-        subLocation: data.subLocation || '',
-        service: data.service || ''
+        location,
+        subLocation,
+        services
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.log('TaskScreen: Error fetching task data:', error?.message || 'Unknown error');
       console.error('Error fetching task data:', error);
     } finally {
       setIsLoading(false);
@@ -65,11 +122,11 @@ const TaskScreen = () => {
       </View>
       <Text style={styles.title}>Task Available</Text>
       <Text style={styles.label}>Assigned Location</Text>
-      <TextInput style={styles.input} value={taskData.location} editable={false} />
+      <TextInput style={styles.input} value={taskData.location?.name} editable={false} />
       <Text style={styles.label}>Sub location</Text>
-      <TextInput style={styles.input} value={taskData.subLocation} editable={false} />
+      <TextInput style={styles.input} value={taskData.subLocation?.name} editable={false} />
       <Text style={styles.label}>Service</Text>
-      <TextInput style={styles.input} value={taskData.service} editable={false} />
+      <TextInput style={styles.input} value={taskData.services.map(service => service.name).join(', ')} editable={false} />
       {/* <Text style={styles.label}>Service Timings</Text>
       <View style={styles.input}>
         <Picker
