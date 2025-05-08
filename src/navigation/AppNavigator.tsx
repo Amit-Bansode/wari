@@ -13,7 +13,8 @@ import TaskTabIcon from '../assets/icons/task.png';
 import ReportTabIcon from '../assets/icons/report.png';
 import EditProfileScreen from '../screens/Profile/EditProfileScreen';
 import MenuScreen from '../screens/MenuScreen';
-import SanitationConfirmationScreen from '../screens/SanitationConfirmationScreen';
+import SpotSelectionScreen from '../screens/SpotSelectionScreen';
+import SpotQuestionScreen from '../screens/SpotQuestion/SpotQuestionScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -82,7 +83,8 @@ const AppNavigator = () => (
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name="Menu" component={MenuScreen} />
-      <Stack.Screen name="SanitationConfirmation" component={SanitationConfirmationScreen} />
+      <Stack.Screen name="SpotSelectionScreen" component={SpotSelectionScreen} />
+      <Stack.Screen name="SpotQuestionScreen" component={SpotQuestionScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );

@@ -11,7 +11,7 @@ const icons = {
   plus: require('../assets/icons/plus.png'),   // Replace with actual plus icon if available
 };
 
-const SanitationConfirmationScreen: React.FC = () => {
+const SpotSelectionScreen: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [toiletSpots, setToiletSpots] = useState([
     'Toilet Spot 1',
@@ -27,21 +27,33 @@ const SanitationConfirmationScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backArrow} onPress={() => navigation.goBack()}>
-        <Image source={icons.back} style={styles.backImg} />
-      </TouchableOpacity>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image source={icons.back} style={styles.backImg} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Pune-Mulshi-Sanitation</Text>
+      </View>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <View style={styles.headerRow}>
-          <Text style={styles.title}>Pune-Mulshi-Sanitation</Text>
-          <Text style={styles.dateText}>(4/6/25, 10:00a.m)</Text>
-        </View>
+        <Text style={styles.dateText}>(4/6/25, 10:00a.m)</Text>
         <Text style={styles.sectionHeader}>Toilet Facility Details</Text>
         <View style={styles.greyBoxRow}>
           {toiletSpots.map((spot, idx) => (
-            <View style={styles.greyBox} key={spot}>
+            <TouchableOpacity 
+              style={styles.greyBox} 
+              key={spot} 
+              onPress={() => {
+                console.log('Attempting to navigate to SpotQuestionScreen');
+                try {
+                  navigation.navigate('SpotQuestionScreen');
+                  console.log('Navigation called successfully');
+                } catch (error) {
+                  console.error('Navigation error:', error);
+                }
+              }}
+            >
               <Text style={styles.greyBoxText}>{spot}</Text>
               <Image source={icons.clock} style={styles.iconRight} />
-            </View>
+            </TouchableOpacity>
           ))}
           <TouchableOpacity style={styles.greyBox} onPress={handleAddSpot}>
             <Text style={styles.greyBoxText}>Add another toilet spot</Text>
@@ -67,39 +79,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    position: 'relative',
   },
-  backArrow: {
-    position: 'absolute',
-    top: 40,
-    left: 16,
-    zIndex: 2,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginTop: 20,
+    marginBottom: 8,
   },
   backImg: {
     width: 28,
     height: 28,
     resizeMode: 'contain',
-  },
-  scrollContent: {
-    paddingTop: 60,
-    paddingHorizontal: 16,
-    paddingBottom: 32,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+    marginRight: 16,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#6B7686',
-    marginRight: 8,
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 32,
   },
   dateText: {
     fontSize: 12,
     color: '#888',
-    marginTop: 4,
+    marginBottom: 24,
   },
   sectionHeader: {
     fontSize: 18,
@@ -145,4 +151,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SanitationConfirmationScreen; 
+export default SpotSelectionScreen; 

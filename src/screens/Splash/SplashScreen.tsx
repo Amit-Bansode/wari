@@ -28,7 +28,7 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Wari Splash Screen</Text>
+      <Text style={styles.text}>Wari</Text>
     </View>
   );
 };
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   text: {
-    fontSize: 24,
+    fontSize: 44,
     fontWeight: 'bold',
   },
 });

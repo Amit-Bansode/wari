@@ -151,7 +151,7 @@ const TaskScreen = () => {
             <TouchableOpacity style={styles.backButton}>
               <Text style={styles.buttonText}>Back</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.confirmButton} onPress={() => navigation.navigate('SanitationConfirmation')}>
+            <TouchableOpacity style={styles.confirmButton} onPress={() => navigation.navigate('SpotSelectionScreen')}>
               <Text style={styles.buttonText}>Confirm</Text>
             </TouchableOpacity>
           </View>
@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {color: '#fff', textAlign: 'center', fontWeight: 'bold'},
   header: {
+    marginTop: 20,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,

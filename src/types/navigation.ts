@@ -5,4 +5,6 @@ export type RootStackParamList = {
   MainTabs: undefined;
   EditProfile: undefined;
   Menu: undefined;
+  SpotSelectionScreen: undefined;
+  SpotQuestionScreen: undefined;
 }; 
