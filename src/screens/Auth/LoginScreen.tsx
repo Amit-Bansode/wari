@@ -13,13 +13,13 @@ import { useLocation } from '../../context/LocationContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
-import { useAuth } from '../../app/services/auth.service';
-
+import { useAuth } from '../../app/services/auth/auth.service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('prasad_lengare');
+  const [password, setPassword] = useState('prasad@0212');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -38,8 +38,10 @@ const LoginScreen: React.FC = () => {
         username: email,
         password: password
       });
-      
+      console.log('Response Token:', response.token);
       if (response.token) {
+        AsyncStorage.setItem('token', response.token || '');
+        console.log('Token from AsyncStorage:', AsyncStorage.getItem('token'));
         // Navigate to main screen on successful login
         navigation.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
       }

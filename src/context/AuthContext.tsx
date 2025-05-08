@@ -34,12 +34,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const setToken = async (newToken: string) => {
+  const setToken = async (token: string) => {
     try {
       console.log('Attempting to save token to AsyncStorage...');
-      await AsyncStorage.setItem('auth_token', newToken);
+      await AsyncStorage.setItem('auth_token', token);
       console.log('Token successfully saved to AsyncStorage');
-      setTokenState(newToken);
+      setTokenState(token);
     } catch (error) {
       console.error('Error saving token to AsyncStorage:', error);
       throw new Error('Failed to save token to AsyncStorage');
