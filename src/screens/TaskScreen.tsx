@@ -8,6 +8,7 @@ import {
   Image,
   SafeAreaView,
   AppState,
+  ActivityIndicator,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import profileImg from '../assets/icons/profile.png';
@@ -121,31 +122,42 @@ const TaskScreen = () => {
         </TouchableOpacity>
       </View>
       <Text style={styles.title}>Task Available</Text>
-      <Text style={styles.label}>Assigned Location</Text>
-      <TextInput style={styles.input} value={taskData.location?.name} editable={false} />
-      <Text style={styles.label}>Sub location</Text>
-      <TextInput style={styles.input} value={taskData.subLocation?.name} editable={false} />
-      <Text style={styles.label}>Service</Text>
-      <TextInput style={styles.input} value={taskData.services.map(service => service.name).join(', ')} editable={false} />
-      {/* <Text style={styles.label}>Service Timings</Text>
-      <View style={styles.input}>
-        <Picker
-          selectedValue={serviceTime}
-          onValueChange={itemValue => setServiceTime(itemValue)}
-          style={{height: 40}}>
-          <Picker.Item label="10:00 a.m" value="10:00 a.m" />
-          <Picker.Item label="11:00 a.m" value="11:00 a.m" />
-          <Picker.Item label="12:00 p.m" value="12:00 p.m" />
-        </Picker>
-      </View> */}
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.backButton}>
-          <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.confirmButton} onPress={() => navigation.navigate('SanitationConfirmation')}>
-          <Text style={styles.buttonText}>Confirm</Text>
-        </TouchableOpacity>
-      </View>
+      
+      {isLoading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#6B7686" />
+          <Text style={styles.loadingText}>Loading task data...</Text>
+        </View>
+      ) : (
+        <>
+          <Text style={styles.label}>Assigned Location</Text>
+          <TextInput style={styles.input} value={taskData.location?.name} editable={false} />
+          <Text style={styles.label}>Sub location</Text>
+          <TextInput style={styles.input} value={taskData.subLocation?.name} editable={false} />
+          <Text style={styles.label}>Service</Text>
+          <TextInput style={styles.input} value={taskData.services.map(service => service.name).join(', ')} editable={false} />
+          {/* <Text style={styles.label}>Service Timings</Text>
+          <View style={styles.input}>
+            <Picker
+              selectedValue={serviceTime}
+              onValueChange={itemValue => setServiceTime(itemValue)}
+              style={{height: 40}}>
+              <Picker.Item label="10:00 a.m" value="10:00 a.m" />
+              <Picker.Item label="11:00 a.m" value="11:00 a.m" />
+              <Picker.Item label="12:00 p.m" value="12:00 p.m" />
+            </Picker>
+          </View> */}
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.backButton}>
+              <Text style={styles.buttonText}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.confirmButton} onPress={() => navigation.navigate('SanitationConfirmation')}>
+              <Text style={styles.buttonText}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+      
       <View style={styles.latLonContainer}>
         {loading && <Text style={styles.latLonText}>Getting location...</Text>}
         {error && <Text style={[styles.latLonText, { color: 'red' }]}>{error}</Text>}
@@ -211,6 +223,17 @@ const styles = StyleSheet.create({
   latLonText: {
     color: '#6B7686',
     fontSize: 14,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: '#6B7686',
+    fontSize: 16,
   },
 });
 
